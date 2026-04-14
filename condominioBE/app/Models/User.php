@@ -17,6 +17,9 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    
     protected $fillable = [
         'name',
         'email',

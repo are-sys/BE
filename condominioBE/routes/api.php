@@ -26,5 +26,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             return 'Email verificado';
         });
     });
+    Route::post('/change-password', [ProfileController::class, 'changePassword']);
 
 });

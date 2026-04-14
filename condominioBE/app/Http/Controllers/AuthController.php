@@ -1,20 +1,21 @@
-use Illuminate\Support\Facades\Hash;
-
-public function register(Request $request)
+public function login(Request $request)
 {
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+    $user = User::where('email', $request->email)->first();
 
-    // rol por defecto
-    $user->assignRole('user');
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Credenciales inválidas'], 401);
+    }
 
-    // enviar verificación correo
-    $user->sendEmailVerificationNotification();
+
+    // $user->tokens()->delete();
+
+    
+    $token = $user->createToken(
+        $request->device_name ?? 'unknown-device'
+    )->plainTextToken;
 
     return response()->json([
-        'message' => 'Usuario creado, revisa tu correo'
+        'token' => $token,
+        'user' => $user
     ]);
 }
